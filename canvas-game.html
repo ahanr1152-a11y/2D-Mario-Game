@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #222;
+            font-family: Arial, sans-serif;
+        }
+        
+        canvas {
+            border: 3px solid #444;
+            background-color: #87ceeb;
+            display: block;
+        }
+        
+        .info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 14px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">Use ← → Arrow Keys to Move | Spacebar to Jump</div>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Canvas setup
+        canvas.width = 800;
+        canvas.height = 600;
+
+        // Ground
+        const ground = {
+            y: canvas.height - 80,
+            height: 80,
+            color: '#228B22'
+        };
+
+        // Character
+        const character = {
+            x: canvas.width / 2 - 25,
+            y: ground.y - 50,
+            width: 50,
+            height: 50,
+            color: '#FF0000',
+            speed: 5,
+            velocityY: 0,
+            isJumping: false,
+            gravity: 0.6,
+            jumpPower: 15
+        };
+
+        // Input handling
+        const keys = {};
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+
+            // Jump on spacebar
+            if (e.key === ' ') {
+                e.preventDefault(); // Prevent page scroll
+                if (!character.isJumping) {
+                    character.velocityY = -character.jumpPower;
+                    character.isJumping = true;
+                }
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // Update game state
+        function update() {
+            // Move left
+            if (keys['ArrowLeft'] || keys['a']) {
+                character.x -= character.speed;
+            }
+
+            // Move right
+            if (keys['ArrowRight'] || keys['d']) {
+                character.x += character.speed;
+            }
+
+            // Boundary checking - keep character in bounds (left and right)
+            if (character.x < 0) {
+                character.x = 0;
+            }
+            if (character.x + character.width > canvas.width) {
+                character.x = canvas.width - character.width;
+            }
+
+            // Apply gravity
+            character.velocityY += character.gravity;
+
+            // Update vertical position
+            character.y += character.velocityY;
+
+            // Ground collision
+            if (character.y + character.height >= ground.y) {
+                character.y = ground.y - character.height;
+                character.velocityY = 0;
+                character.isJumping = false;
+            }
+
+            // Prevent character from flying off top of screen
+            if (character.y < 0) {
+                character.y = 0;
+                character.velocityY = 0;
+            }
+        }
+
+        // Draw game
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = '#87ceeb';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw ground
+            ctx.fillStyle = ground.color;
+            ctx.fillRect(0, ground.y, canvas.width, ground.height);
+
+            // Draw character
+            ctx.fillStyle = character.color;
+            ctx.fillRect(character.x, character.y, character.width, character.height);
+
+            // Draw character eyes (just for fun)
+            ctx.fillStyle = 'white';
+            ctx.fillRect(character.x + 10, character.y + 15, 8, 8);
+            ctx.fillRect(character.x + 32, character.y + 15, 8, 8);
+
+            ctx.fillStyle = 'black';
+            ctx.fillRect(character.x + 12, character.y + 17, 4, 4);
+            ctx.fillRect(character.x + 34, character.y + 17, 4, 4);
+        }
+
+        // Game loop
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start the game
+        gameLoop();
+    </script>
+</body>
+</html>
