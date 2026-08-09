@@ -6,12 +6,20 @@
 ##Live demo- https://canvas-platformer-ga-u60c.bolt.host
 
 
-##​🌟 Features
+🌟 Features
+
+
 #​Interactive Player Controls: Smooth movement mechanics using keyboard arrow keys for navigation and the spacebar to jump.
 
-#​Coin Collection & Scoring System: Dynamic score tracking that updates in real-time as players collect coins across the map.
+
+
+🪙Coin Collection & Scoring System: Dynamic score tracking that updates in real-time as players collect coins across the map.
+
+
 
 #​Win Condition Mechanics: Reaching the final flag after collecting all coins triggers a celebratory "YOU WIN!" screen with a replay option.
+
+
 
 #​Retro-Style Platforming Layout: Classic 2D layout featuring platforms, obstacles, a clear sky background, and clouds.
 
